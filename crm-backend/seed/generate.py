@@ -366,7 +366,10 @@ def cohort_general() -> tuple[list[Customer], list[Order]]:
 
 def compute_count(session: Session, conditions: list[dict], match_mode: str) -> int:
     """
-    Compute customer count for seed segment definitions using Python-side evaluation.
+    Compute the customer count for a set of Customer-table-only filter conditions.
+    Uses Python-side evaluation after loading all customers to avoid building
+    dynamic SQLAlchemy queries before the segment_service is implemented.
+
     Only handles the operators used by the 5 seed segments below.
     """
     customers = session.exec(select(Customer)).all()

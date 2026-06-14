@@ -4,3 +4,4 @@ sqlmodel>=0.0.38
 openai>=1.0.0
 httpx==0.27.2
 python-dotenv==1.0.1
+faker==26.0.0

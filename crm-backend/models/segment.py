@@ -15,8 +15,8 @@ class Segment(SQLModel, table=True):
     column for fast reading. The segment_service composes match_mode + filters
     when evaluating the audience.
 
-    customer_count is cached on create and refreshed when a segment is fetched
-    via GET /api/segments/{id}.
+    customer_count is cached when the segment is saved and recomputed by the
+    segment_service whenever filters change.
 
     ai_reasoning stores the AI explanation for why this audience is valuable.
     """
