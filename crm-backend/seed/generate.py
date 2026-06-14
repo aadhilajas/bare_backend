@@ -30,6 +30,7 @@ from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
+from sqlalchemy import func
 from sqlmodel import Session, select, delete
 from db import create_db_and_tables, engine
 from models.customer import Customer
@@ -512,6 +513,15 @@ def clear_all(session: Session) -> None:
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
+
+def seed_if_empty() -> None:
+    """Seed demo data on first boot when the DB has no customers (e.g. Railway deploy)."""
+    create_db_and_tables()
+    with Session(engine) as session:
+        if session.exec(select(func.count(Customer.id))).one() > 0:
+            return
+    seed()
+
 
 def seed() -> None:
     create_db_and_tables()

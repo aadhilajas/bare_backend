@@ -4,11 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from db import create_db_and_tables
 from routes import customers, orders, segments, campaigns, copilot, receipts
+from seed.generate import seed_if_empty
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
+    seed_if_empty()
     yield
 
 
