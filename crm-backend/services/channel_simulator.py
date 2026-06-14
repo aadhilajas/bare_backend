@@ -53,10 +53,6 @@ async def _post_receipt(receipt: dict, retries: int = MAX_RETRIES) -> bool:
                 resp = await client.post(CRM_RECEIPT_URL, json=receipt)
 
             if resp.status_code < 500:
-                print(
-                    f"[embedded-stub] message={message_id} receipt status={status} "
-                    f"posted successfully http={resp.status_code}"
-                )
                 return True
 
             print(
@@ -94,8 +90,6 @@ def _make_receipt(payload: dict, status: str, failure_reason: str | None = None)
 
 
 async def simulate_delivery(payload: dict) -> None:
-    message_id = payload.get("message_id", "?")
-    print(f"[embedded-stub] message={message_id} simulation started")
     await asyncio.sleep(random.uniform(0.0, 1.0))
 
     for step in LIFECYCLE:
@@ -114,9 +108,6 @@ async def simulate_delivery(payload: dict) -> None:
                         failure_reason=random.choice(FAILURE_REASONS),
                     )
                 )
-            print(f"[embedded-stub] message={message_id} simulation ended early at {status}")
             return
 
         await _post_receipt(_make_receipt(payload, status=status))
-
-    print(f"[embedded-stub] message={message_id} simulation completed full lifecycle")
