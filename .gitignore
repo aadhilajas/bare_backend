@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+*.env
+crm-backend/.env
+crm-backend/.env.txt
+channel-stub/.env
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+crm-backend/bare.db
+
+# Node / frontend (excluded from backend repo)
+node_modules/
+frontend/
+
+# Frontend build output
+dist/
+
+# Internal project notes — do not publish
+docs/
+.cursorrules
+.cursor/
+
+# IDE and OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/

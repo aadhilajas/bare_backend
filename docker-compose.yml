@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  crm-backend:
+    build: ./crm-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - CHANNEL_STUB_URL=http://channel-stub:8001
+      - CRM_RECEIPT_URL=http://crm-backend:8000/api/receipts
+      - DATABASE_URL=sqlite:///./bare.db
+    volumes:
+      - crm-db:/app
+    depends_on:
+      - channel-stub
+    restart: unless-stopped
+
+  channel-stub:
+    build: ./channel-stub
+    ports:
+      - "8001:8001"
+    environment:
+      - CRM_RECEIPT_URL=http://crm-backend:8000/api/receipts
+    restart: unless-stopped
+
+volumes:
+  crm-db:
