@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from config import CHANNEL_STUB_URL, CRM_RECEIPT_URL, EMBEDDED_CHANNEL_STUB
 from db import create_db_and_tables
 from routes import customers, orders, segments, campaigns, copilot, receipts
 from seed.generate import seed_if_empty
@@ -11,6 +12,12 @@ from seed.generate import seed_if_empty
 async def lifespan(app: FastAPI):
     create_db_and_tables()
     seed_if_empty()
+    print(
+        "[startup] channel dispatch config: "
+        f"EMBEDDED_CHANNEL_STUB={EMBEDDED_CHANNEL_STUB} "
+        f"CHANNEL_STUB_URL={CHANNEL_STUB_URL} "
+        f"CRM_RECEIPT_URL={CRM_RECEIPT_URL}"
+    )
     yield
 
 

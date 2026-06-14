@@ -75,7 +75,8 @@ curl http://localhost:8001/health
 |---|---|---|---|
 | `OPENAI_API_KEY` | For AI features | — | OpenAI or OpenRouter API key |
 | `CHANNEL_STUB_URL` | No | `http://localhost:8001` | Channel stub base URL |
-| `CRM_RECEIPT_URL` | No | `http://localhost:8000/api/receipts` | Receipt callback URL |
+| `EMBEDDED_CHANNEL_STUB` | No | `false` | Run delivery simulation in-process (skips stub HTTP) |
+| `CRM_RECEIPT_URL` | No | `http://localhost:8000/api/receipts` | Receipt callback URL (stub + embedded simulator) |
 | `DATABASE_URL` | No | `sqlite:///./bare.db` | SQLite connection string |
 | `OPENAI_BASE_URL` | No | auto-detected for `sk-or-*` keys | OpenAI-compatible API base URL |
 
@@ -106,6 +107,8 @@ Services will be available at:
 
 - Set `OPENAI_API_KEY` via your host's secret manager or a `.env` file excluded from git.
 - For cloud deployment, update `CHANNEL_STUB_URL` and `CRM_RECEIPT_URL` to use internal service hostnames.
+- **Railway (single service, root = `crm-backend`):** `channel-stub` is not deployed. The CRM auto-falls back to an embedded simulator when `CHANNEL_STUB_URL` is unreachable (default `localhost:8001`). Optionally set `EMBEDDED_CHANNEL_STUB=true` to skip stub HTTP entirely. Leave `CRM_RECEIPT_URL` at `http://127.0.0.1:8000/api/receipts` so receipts loop back to the same process.
+- **Railway (two services):** Deploy `channel-stub` as a second service (root = `channel-stub`), set `CHANNEL_STUB_URL` to its public URL, and set `CRM_RECEIPT_URL` on the stub to the CRM's `/api/receipts` endpoint.
 - SQLite is fine for demos; use a managed database for production workloads.
 - Run `python seed/generate.py` inside the CRM container once after first deploy if you need demo data.
 
@@ -117,7 +120,7 @@ Services will be available at:
 | Segments | `GET/POST /api/segments`, `POST /api/segments/interpret`, `POST /api/segments/preview` |
 | Campaigns | `GET/POST /api/campaigns`, `POST /api/campaigns/{id}/send`, `GET /api/campaigns/stats` |
 | AI co-pilot | `POST /api/copilot/chat` |
-| Receipts | `POST /api/receipts` (called by channel-stub only) |
+| Receipts | `POST /api/receipts` (called by channel-stub or embedded simulator) |
 
 ## Project structure
 
